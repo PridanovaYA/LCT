@@ -5,6 +5,7 @@ from numpy.linalg import pinv
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import title
 from skimage.io import imread, imshow, show
+from PIL import Image
 
 
 def transformRGB2YIQ(imgRGB: np.ndarray) -> np.ndarray:
@@ -37,13 +38,18 @@ def getting_matrix_Tk(Teta_k):
 
 
 if __name__ == "__main__":
-    img = cv2.imread('test.jpg')
-    #print(img[0][0])
-    #print(img[0][0].transpose())
+    img = imread('test3.jpg')
+
+    print()
+    # r1, g1, b1 = img.split()
+    # print(img[0][0])
+    # print(img[0][0].transpose())
+
     fig = plt.figure(figsize=(20, 10))
     fig.add_subplot(2, 3, 1)
-    # title('Исходное изображение(rgb)')
-    # imshow(img)
+    title('Исходное изображение(rgb)')
+    # в цветовом пространстве opencv изображения загружаются в цветовом пространстве BGR
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     k = 60
 
     T_YIQ = transformRGB2YIQ(img)
@@ -61,21 +67,29 @@ if __name__ == "__main__":
     print(g_k)
 
     fig.add_subplot(2, 3, 2)
-    # title('После преобразования цвета(yiq)')
-    # imshow(T_YIQ)
+    title('После преобразования цвета(yiq)')
+    imshow(T_YIQ)
     # show()
     img_ = img.reshape(-1, 3)
-    imshow(img_)
+    # imshow(img_)
 
-    show()
-    m,n,q = np.shape(img)
-    p = np.zeros((m, n, q))
-    # for i in range(0,m):
-    #     for j in range(0,n):
+    n, q = np.shape(img_)
+    # p = np.zeros((m, n, q))
+    # p = img.reshape(1,3)
+    # k=0
+    for i in range(0, n):
+            img_[n][0] = img_[n][0].transpose()
+    #         k+=1
+    #
+    # print(p)
 
-
-    print()
-
+    im1 = Image.open('test3.jpg')
+    imag = im1.convert('RGB')
+    X, Y = 0, 0
+    pixelRGB = imag.getpixel((X, Y))
+    R, G, B = pixelRGB
+    # r1, g1, b1 = im1.split()
+    print(R, G, B)
     # I = imread('test.jpg');
     # imshow(I);
     # J = rgb2ntsc(I);
