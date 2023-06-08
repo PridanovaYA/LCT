@@ -34,7 +34,7 @@ def getting_matrix_Tk(Teta_k):
 
 if __name__ == "__main__":
     img = imread('test3.jpg')
-
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     """отрисовка исходника"""
     fig = plt.figure(figsize=(20, 10))
     fig.add_subplot(2, 3, 1)
@@ -50,18 +50,20 @@ if __name__ == "__main__":
 
     """реализация второго шага алгоритма"""
     k = 60
-    Teta_k = (math.pi * k) / 180
+    Teta_k = (3.14 * k) / 180
+    T_k = getting_matrix_Tk(Teta_k)
 
     """реализация третьего шага алгоритма"""
-    T_YIQ_inv = pinv(T_YIQ)
-    T_k = getting_matrix_Tk(Teta_k)
-    T_YIQ_ = T_YIQ.reshape(-1, 3)
-    T_YIQ_inv_ = T_YIQ_inv.reshape(-1, 3)
-    g_k = np.dot(T_YIQ_, T_k, T_YIQ_inv_)
+    #____________________________________________________________________
+    # T_YIQ_inv = pinv(T_YIQ)
 
+    # T_YIQ_ = T_YIQ.reshape(-1, 3)
+    # T_YIQ_inv_ = T_YIQ_inv.reshape(-1, 3)
+    # g_k = np.dot(T_YIQ_, T_k, T_YIQ_inv_)
+    #________________________________________________________________________
     T_YIQ_arr = np.array([[0.299, 0.587, 0.114],
-                [0.59590059, -0.27455667, -0.32134392],
-                [0.21153661, -0.52273617, 0.31119955]])
+                [0.596, -0.275, -0.321],
+                [0.212, -0.523, 0.311]])
     T_YIQ_arr_inv = inv(T_YIQ_arr)
 
     g_k_arr = np.dot(T_YIQ_arr, T_k, T_YIQ_arr_inv)
@@ -81,14 +83,14 @@ if __name__ == "__main__":
         # Matrix = np.dot(img_[m], g_k[m].transpose)
     fig.add_subplot(2, 3, 3)
     for i in range (0, m):
-        v[i] = np.dot(img_[i].transpose(), g_k_arr)
+        v[i] = np.dot(g_k_arr, img_[i].transpose())
     v = v.reshape(img.shape)
     #imshow(v)
     plt.imshow(v)
 
-    v_result = transformYIQ2RGB(v)
-    fig.add_subplot(2, 3, 4)
-    plt.imshow(v_result)
+    # v_result = transformYIQ2RGB(v)
+    # fig.add_subplot(2, 3, 4)
+    # plt.imshow(v_result)
 
     """попытка вычленить массивы, отвечающие за цвет"""
     # p = np.zeros((m, n, q))
