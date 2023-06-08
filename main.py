@@ -34,13 +34,12 @@ def getting_matrix_Tk(Teta_k):
 
 
 if __name__ == "__main__":
-    img = imread('test3.jpg')
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = imread('test3.jpg', plugin='pil')
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     """отрисовка исходника"""
     fig = plt.figure(figsize=(20, 10))
     fig.add_subplot(2, 3, 1)
     title('Исходное изображение(rgb)')
-    """в цветовом пространстве opencv изображения загружаются в цветовом пространстве BGR"""
     plt.imshow(img)
 
     """реализация первого шага алгоритма"""
@@ -72,33 +71,29 @@ if __name__ == "__main__":
 
     """проверка развертывания изображния"""
     # fig.add_subplot(2, 3, 3)
-    # img_ = img.reshape(-1, 3)
+    img_ = img.reshape(-1, 3)
     # img_v = img_.reshape(img.shape)
     # imshow(img_v)
 
-    """реализация четвертого пункста алгоритма"""
+    """реализация четвертого пункта алгоритма"""
     m, n, q = img.shape
-    v = np.empty((m,n,q), dtype="float32")
-    # for i in range(0, m):
-        # img_[m][0] = img_[m][0].transpose
-        # Matrix = np.dot(img_[m], g_k[m].transpose)
+    v = np.empty((m,n,q))
     fig.add_subplot(2, 3, 3)
     for i in range (0, m):
         for j in range(0, n):
-            v[i][j] = np.dot(g_k_arr, img[i][j])
-    # v = v.reshape(img.shape)
-    #imshow(v)
-    plt.imshow(v)
+            v[i][j] = np.dot(g_k_arr, img_[i][j].transpose())
+    imshow(v)
 
     # v_result = tf.image.yiq_to_rgb(v)
-    v_result = np.empty((m, n, q), dtype="float32")
+    # v_result = transformYIQ2RGB(v)
+    v_result = np.empty((m, n, q))
     fig.add_subplot(2, 3, 4)
 
     for i in range(0, m):
         for j in range(0, n):
-            v_result[i][j] = np.dot(inv(T_YIQ_arr).transpose(), v[i][j])
+            v_result[i][j] = np.dot(v[i][j], inv(T_YIQ_arr).transpose())
 
-    plt.imshow(v_result)
+    imshow(v_result)
 
     """попытка вычленить массивы, отвечающие за цвет"""
     # p = np.zeros((m, n, q))
