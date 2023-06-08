@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import cv2
+import tf as tf
 from numpy.linalg import pinv, inv
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import title
@@ -19,10 +20,10 @@ def transformRGB2YIQ(imgRGB: np.ndarray) -> np.ndarray:
 
 def transformYIQ2RGB(imgYIQ: np.ndarray) -> np.ndarray:
     yiq_from_rgb = np.array([[0.299, 0.587, 0.114],
-                             [0.59590059, -0.27455667, -0.32134392],
-                             [0.21153661, -0.52273617, 0.31119955]])
+                [0.596, -0.275, -0.321],
+                [0.212, -0.523, 0.311]])
     OrigShape = imgYIQ.shape
-    return np.dot(imgYIQ.reshape(-1, 3), np.linalg.inv(yiq_from_rgb).transpose()).reshape(OrigShape)
+    return np.dot(imgYIQ.reshape(-1, 3), inv(yiq_from_rgb).transpose()).reshape(OrigShape)
 
 
 def getting_matrix_Tk(Teta_k):
@@ -40,13 +41,13 @@ if __name__ == "__main__":
     fig.add_subplot(2, 3, 1)
     title('Исходное изображение(rgb)')
     """в цветовом пространстве opencv изображения загружаются в цветовом пространстве BGR"""
-    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.imshow(img)
 
     """реализация первого шага алгоритма"""
-    T_YIQ = transformRGB2YIQ(img)
-    fig.add_subplot(2, 3, 2)
-    title('После преобразования цвета(yiq)')
-    imshow(T_YIQ)
+    # T_YIQ = transformRGB2YIQ(img)
+    # fig.add_subplot(2, 3, 2)
+    # title('После преобразования цвета(yiq)')
+    # imshow(T_YIQ)
 
     """реализация второго шага алгоритма"""
     k = 60
@@ -71,26 +72,33 @@ if __name__ == "__main__":
 
     """проверка развертывания изображния"""
     # fig.add_subplot(2, 3, 3)
-    img_ = img.reshape(-1, 3)
+    # img_ = img.reshape(-1, 3)
     # img_v = img_.reshape(img.shape)
     # imshow(img_v)
 
     """реализация четвертого пункста алгоритма"""
-    m, n = img_.shape
-    v = np.empty((m,n), dtype="float32")
+    m, n, q = img.shape
+    v = np.empty((m,n,q), dtype="float32")
     # for i in range(0, m):
         # img_[m][0] = img_[m][0].transpose
         # Matrix = np.dot(img_[m], g_k[m].transpose)
     fig.add_subplot(2, 3, 3)
     for i in range (0, m):
-        v[i] = np.dot(g_k_arr, img_[i].transpose())
-    v = v.reshape(img.shape)
+        for j in range(0, n):
+            v[i][j] = np.dot(g_k_arr, img[i][j].transpose())
+    # v = v.reshape(img.shape)
     #imshow(v)
     plt.imshow(v)
 
-    # v_result = transformYIQ2RGB(v)
-    # fig.add_subplot(2, 3, 4)
-    # plt.imshow(v_result)
+    # v_result = tf.image.yiq_to_rgb(v)
+    v_result = np.empty((m, n, q), dtype="float32")
+    fig.add_subplot(2, 3, 4)
+
+    for i in range(0, m):
+        for j in range(0, n):
+            v_result[i][j] = np.dot(v[i][j], inv(T_YIQ_arr).transpose())
+
+    plt.imshow(v_result)
 
     """попытка вычленить массивы, отвечающие за цвет"""
     # p = np.zeros((m, n, q))
