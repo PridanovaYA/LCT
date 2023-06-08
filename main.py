@@ -85,7 +85,7 @@ if __name__ == "__main__":
     fig.add_subplot(2, 3, 3)
     for i in range (0, m):
         for j in range(0, n):
-            v[i][j] = np.dot(g_k_arr, img[i][j].transpose())
+            v[i][j] = np.dot(g_k_arr, img[i][j])
     # v = v.reshape(img.shape)
     #imshow(v)
     plt.imshow(v)
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     for i in range(0, m):
         for j in range(0, n):
-            v_result[i][j] = np.dot(v[i][j], inv(T_YIQ_arr).transpose())
+            v_result[i][j] = np.dot(inv(T_YIQ_arr).transpose(), v[i][j])
 
     plt.imshow(v_result)
 
