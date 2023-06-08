@@ -61,10 +61,24 @@ if __name__ == "__main__":
     # print(g_k)
 
     """проверка развертывания изображния"""
-    fig.add_subplot(2, 3, 3)
+    # fig.add_subplot(2, 3, 3)
     img_ = img.reshape(-1, 3)
-    img_v = img_.reshape(img.shape)
-    imshow(img_v)
+    # img_v = img_.reshape(img.shape)
+    # imshow(img_v)
+
+    """реализация четвертого пункста алгоритма"""
+    m, n = img_.shape
+    v = np.empty((m,n), dtype="float32")
+    # for i in range(0, m):
+        # img_[m][0] = img_[m][0].transpose
+        # Matrix = np.dot(img_[m], g_k[m].transpose)
+    fig.add_subplot(2, 3, 3)
+    for i in range (0, m):
+        v[i] = np.dot(g_k[i],img_[i])
+    v = v.reshape(img.shape)
+    #imshow(v)
+    plt.imshow(cv2.cvtColor(v, cv2.COLOR_BGR2RGB))
+
 
     """попытка вычленить массивы, отвечающие за цвет"""
     # p = np.zeros((m, n, q))
