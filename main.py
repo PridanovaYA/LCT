@@ -1,7 +1,7 @@
 import math
 import numpy as np
 import cv2
-from numpy.linalg import pinv
+from numpy.linalg import pinv, inv
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import title
 from skimage.io import imread, imshow, show
@@ -58,6 +58,13 @@ if __name__ == "__main__":
     T_YIQ_ = T_YIQ.reshape(-1, 3)
     T_YIQ_inv_ = T_YIQ_inv.reshape(-1, 3)
     g_k = np.dot(T_YIQ_, T_k, T_YIQ_inv_)
+
+    T_YIQ_arr = np.array([[0.299, 0.587, 0.114],
+                [0.59590059, -0.27455667, -0.32134392],
+                [0.21153661, -0.52273617, 0.31119955]])
+    T_YIQ_arr_inv = inv(T_YIQ_arr)
+
+    g_k_arr = np.dot(T_YIQ_arr, T_k, T_YIQ_arr_inv)
     # print(g_k)
 
     """проверка развертывания изображния"""
@@ -74,11 +81,14 @@ if __name__ == "__main__":
         # Matrix = np.dot(img_[m], g_k[m].transpose)
     fig.add_subplot(2, 3, 3)
     for i in range (0, m):
-        v[i] = np.dot(g_k[i],img_[i])
+        v[i] = np.dot(img_[i].transpose(), g_k_arr)
     v = v.reshape(img.shape)
     #imshow(v)
-    plt.imshow(cv2.cvtColor(v, cv2.COLOR_BGR2RGB))
+    plt.imshow(v)
 
+    v_result = transformYIQ2RGB(v)
+    fig.add_subplot(2, 3, 4)
+    plt.imshow(v_result)
 
     """попытка вычленить массивы, отвечающие за цвет"""
     # p = np.zeros((m, n, q))
