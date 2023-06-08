@@ -71,28 +71,35 @@ if __name__ == "__main__":
 
     """проверка развертывания изображния"""
     # fig.add_subplot(2, 3, 3)
-    img_ = img.reshape(-1, 3)
+    img_ = img
     # img_v = img_.reshape(img.shape)
     # imshow(img_v)
 
     """реализация четвертого пункта алгоритма"""
     m, n, q = img.shape
     v = np.empty((m,n,q))
-    fig.add_subplot(2, 3, 3)
-    for i in range (0, m):
-        for j in range(0, n):
-            v[i][j] = np.dot(g_k_arr, img_[i][j].transpose())
+    fig.add_subplot(2, 3, 2)
+    title('Изображение v1 = g_k * v_transpose')
+    img = img.reshape(-1,3)
+    for i in range(0, m):
+            img[i] = img[i].transpose()
+    # g_k_arr = g_k_arr.reshape(img.shape)
+    v = np.dot(img, g_k_arr).reshape(img_.shape)
+    # for i in range (0, m):
+    #     for j in range(0, n):
+    #         v[i][j] = np.dot(g_k_arr, img_[i][j].transpose())
     imshow(v)
 
     # v_result = tf.image.yiq_to_rgb(v)
     # v_result = transformYIQ2RGB(v)
-    v_result = np.empty((m, n, q))
-    fig.add_subplot(2, 3, 4)
-
-    for i in range(0, m):
-        for j in range(0, n):
-            v_result[i][j] = np.dot(v[i][j], inv(T_YIQ_arr).transpose())
-
+    # v_result = np.empty((m, n, q))
+    v_result = np.dot(v.reshape(-1, 3), T_YIQ_arr_inv.transpose()).reshape(img_.shape)
+    fig.add_subplot(2, 3, 3)
+    title('YIQ - > RGB')
+    # for i in range(0, m):
+    #     for j in range(0, n):
+    #         v_result[i][j] = np.dot(v[i][j], inv(T_YIQ_arr).transpose())
+    #
     imshow(v_result)
 
     """попытка вычленить массивы, отвечающие за цвет"""
