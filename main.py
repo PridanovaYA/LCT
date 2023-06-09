@@ -33,9 +33,13 @@ def getting_matrix_Tk(Teta_k):
 
 
 if __name__ == "__main__":
+    k = 60
+
     img = imread('test3.jpg', plugin='pil')
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
     """отрисовка исходника"""
+
     fig = plt.figure(figsize=(20, 10))
     fig.add_subplot(2, 3, 1)
     title('Исходное изображение(rgb)')
@@ -47,7 +51,7 @@ if __name__ == "__main__":
     # imshow(T_YIQ)
 
     """реализация первого шага алгоритма"""
-    k = 60
+
     Teta_k = (3.14 * k) / 180
     T_k = getting_matrix_Tk(Teta_k)
     T_YIQ_arr = np.array([[0.299, 0.587, 0.114],
@@ -60,6 +64,7 @@ if __name__ == "__main__":
     img_ = img
 
     """реализация второго пункта алгоритма"""
+
     m, n, q = img.shape
     fig.add_subplot(2, 3, 2)
     title('v1 = g_k * v_transpose')
@@ -71,8 +76,9 @@ if __name__ == "__main__":
     imshow(v)
 
     """наложение"""
+
     img_ = np.asarray(img_, np.float64)
-    result = cv2.addWeighted(img_, 1, v, 0.00001, 0.0)
+    result = cv2.addWeighted(img_, 1, v, 0.000001, -165)
     fig.add_subplot(2, 3, 3)
     title('исходное I c водяным знаком V с подписью k')
     imshow(result)
